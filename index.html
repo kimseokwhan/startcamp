@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CINE-SHELTER : 영화 그린랜드 생존 아카이브</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Montserrat (Heading) & Noto Sans KR (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Custom Theme Settings */
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #0B0B0B;
+      color: #E5E5E5;
+      overflow-x: hidden;
+    }
+    .font-title {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    /* Hazard Glowing Text & Borders */
+    .text-hazard {
+      color: #FF3333;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.6), 0 0 20px rgba(255, 51, 51, 0.4);
+    }
+    .border-hazard {
+      border-color: #FF3333;
+      box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+    }
+    .bg-hazard-gradient {
+      background: linear-gradient(180deg, rgba(255, 51, 51, 0.1) 0%, rgba(0, 0, 0, 0.9) 100%);
+    }
+    .btn-hazard {
+      background-color: #FF3333;
+      color: #0B0B0B;
+      font-weight: 800;
+      transition: all 0.3s ease;
+      border: 1px solid #FF3333;
+    }
+    .btn-hazard:hover {
+      background-color: transparent;
+      color: #FF3333;
+      box-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
+    }
+
+    /* Terminal/Scanline Effect for Immersion */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 4px, 6px 100%;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0B0B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF3333;
+    }
+
+    /* Blink Animation for Emergency Indicators */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .animate-blink {
+      animation: blink 1.5s infinite;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen">
+
+  <!-- Immersive Scanline Effect -->
+  <div class="scanlines"></div>
+
+  <!-- Top Emergency Alert Ticker -->
+  <div class="w-full bg-[#1A0505] border-b border-[#FF3333] py-2 px-4 overflow-hidden z-50 relative">
+    <div class="flex items-center space-x-6 whitespace-nowrap animate-marquee">
+      <span class="flex items-center text-xs text-[#FF3333] font-bold animate-blink">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FF3333] mr-2"></span>
+        EMERGENCY BROADCAST SYSTEM : 클라크(CLARKE) 혜성 지구 충돌 경로 진입
+      </span>
+      <span class="text-xs text-gray-400">|</span>
+      <span class="text-xs text-gray-400">정부 지정 1등급 대피소 '그린랜드' 발권 인원 제한 임박</span>
+      <span class="text-xs text-gray-400">|</span>
+      <span class="text-xs text-[#FF3333] font-bold">WARNING: 무단 탈출 및 약탈 행위 엄중 처벌</span>
+      <span class="text-xs text-gray-400">|</span>
+      <span class="text-xs text-gray-400">CINE-SHELTER에서 제공하는 가이드를 즉각 확인하십시오.</span>
+    </div>
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="border-b border-[#222] bg-[#0F0F0F] sticky top-0 z-40 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" onclick="showSection('home')" class="flex items-center space-x-3 group">
+        <div class="p-2 border border-[#FF3333] bg-[#220808] text-hazard font-title font-black tracking-widest text-lg rounded">
+          CS
+        </div>
+        <div>
+          <span class="font-title font-black text-xl tracking-wider text-white block group-hover:text-hazard transition-colors">CINE-SHELTER</span>
+          <span class="text-[9px] font-bold tracking-widest text-[#FF3333] block">GREENLAND ARCHIVE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex space-x-1">
+        <button onclick="showSection('home')" class="nav-tab px-4 py-2 rounded text-sm font-bold text-white hover:text-hazard transition-all hover:bg-[#1A1A1A] tracking-wider" id="tab-home">
+          EMERGENCY SYSTEM
+        </button>
+        <button onclick="showSection('about')" class="nav-tab px-4 py-2 rounded text-sm font-bold text-gray-400 hover:text-hazard transition-all hover:bg-[#1A1A1A] tracking-wider" id="tab-about">
+          ABOUT GREENLAND
+        </button>
+        <button onclick="showSection('simulation')" class="nav-tab px-4 py-2 rounded text-sm font-bold text-gray-400 hover:text-hazard transition-all hover:bg-[#1A1A1A] tracking-wider" id="tab-simulation">
+          SURVIVAL TEST
+        </button>
+        <button onclick="showSection('board')" class="nav-tab px-4 py-2 rounded text-sm font-bold text-gray-400 hover:text-hazard transition-all hover:bg-[#1A1A1A] tracking-wider" id="tab-board">
+          SHELTER BOARD
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#0F0F0F] border-b border-[#222] px-4 pt-2 pb-4 space-y-1">
+      <button onclick="showSection('home')" class="w-full text-left block px-3 py-2 rounded text-base font-bold text-white hover:bg-[#1A1A1A] hover:text-hazard">EMERGENCY SYSTEM</button>
+      <button onclick="showSection('about')" class="w-full text-left block px-3 py-2 rounded text-base font-bold text-gray-400 hover:bg-[#1A1A1A] hover:text-hazard">ABOUT GREENLAND</button>
+      <button onclick="showSection('simulation')" class="w-full text-left block px-3 py-2 rounded text-base font-bold text-gray-400 hover:bg-[#1A1A1A] hover:text-hazard">SURVIVAL TEST</button>
+      <button onclick="showSection('board')" class="w-full text-left block px-3 py-2 rounded text-base font-bold text-gray-400 hover:bg-[#1A1A1A] hover:text-hazard">SHELTER BOARD</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- ============================================= -->
+    <!-- SECTION 1: HOME (EMERGENCY SYSTEM) -->
+    <!-- ============================================= -->
+    <section id="sec-home" class="space-y-16">
+      
+      <!-- Countdown & Hero Banner -->
+      <div class="relative bg-hazard-gradient border border-[#333] rounded-2xl p-8 md:p-16 overflow-hidden flex flex-col items-center text-center space-y-8">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ff3333_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+        
+        <span class="px-4 py-1.5 rounded-full border border-[#FF3333] text-[#FF3333] text-xs font-black tracking-widest bg-[#1a0505] uppercase animate-blink">
+          IMMINENT GLOBAL CATACLYSM
+        </span>
+
+        <h1 class="text-4xl md:text-6xl font-title font-black tracking-tight text-white max-w-4xl leading-tight">
+          단 1%의 생존 티켓,<br>
+          <span class="text-hazard">당신이라면 어떤 선택을 하시겠습니까?</span>
+        </h1>
+
+        <p class="text-gray-400 max-w-2xl text-base md:text-lg leading-relaxed">
+          초거대 혜성 '클라크'가 지구를 향해 돌진하고 있습니다. 예고된 충돌까지 단 48시간. 
+          화려한 가짜 영웅담이 아닙니다. 영화 &lt;그린랜드&gt;(2020)가 생생하게 고발하는 
+          가장 잔혹하고 지독하게 사실적인 재난의 현장 속으로 당신을 소환합니다.
+        </p>
+
+        <!-- Dynamic Countdown Timer -->
+        <div class="bg-black/80 border border-[#222] rounded-xl px-6 py-4 md:px-12 md:py-6 flex flex-col items-center space-y-2">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">지구 충돌(D-48)까지 남은 시간</span>
+          <div id="countdown" class="font-title text-4xl md:text-6xl font-black text-[#FF3333] tracking-wider">
+            00:00:00:00
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center">
+          <button onclick="showSection('simulation')" class="btn-hazard px-8 py-4 rounded-lg text-base tracking-wider uppercase transition-all duration-300">
+            즉각 대피 시뮬레이션 시작
+          </button>
+          <button onclick="showSection('about')" class="px-8 py-4 rounded-lg text-base border border-gray-600 hover:border-white text-gray-300 hover:text-white tracking-wider transition-all duration-300 bg-transparent">
+            그린랜드 사건 기록 보관소 보기
+          </button>
+        </div>
+      </div>
+
+      <!-- Feature Teasers -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Teaser 1 -->
+        <div class="bg-[#121212] border border-[#222] p-8 rounded-xl space-y-4 hover:border-hazard transition-all duration-300">
+          <div class="w-12 h-12 bg-[#1A0505] text-[#FF3333] rounded-lg border border-[#FF3333]/30 flex items-center justify-center text-xl font-bold font-title">
+            01
+          </div>
+          <h3 class="text-lg font-bold text-white">극사실주의 재난 분석</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            무의미한 초대형 폭발 CG는 걷어냈습니다. 대피 명령 문자 한 통이 불러오는 일상 붕괴와 지독하게 리얼한 재앙의 현실을 해부합니다.
+          </p>
+        </div>
+
+        <!-- Teaser 2 -->
+        <div class="bg-[#121212] border border-[#222] p-8 rounded-xl space-y-4 hover:border-hazard transition-all duration-300">
+          <div class="w-12 h-12 bg-[#1A0505] text-[#FF3333] rounded-lg border border-[#FF3333]/30 flex items-center justify-center text-xl font-bold font-title">
+            02
+          </div>
+          <h3 class="text-lg font-bold text-white">생존 가치 측정 (테스트)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            "내 아이가 인슐린 질환이 있어 대피소 입장이 제한된다면?" 영화가 계속해서 던지는 극한의 딜레마를 통해 당신의 진짜 본성을 측정해 보세요.
+          </p>
+        </div>
+
+        <!-- Teaser 3 -->
+        <div class="bg-[#121212] border border-[#222] p-8 rounded-xl space-y-4 hover:border-hazard transition-all duration-300">
+          <div class="w-12 h-12 bg-[#1A0505] text-[#FF3333] rounded-lg border border-[#FF3333]/30 flex items-center justify-center text-xl font-bold font-title">
+            03
+          </div>
+          <h3 class="text-lg font-bold text-white">쉘터 통신망 (방명록)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            마지막 운명의 날을 마주하며 지구상의 다른 동료 생존자들과 메시지를 공유하고, 극사실주의 영화가 안겨주는 묵직한 감동을 기록하세요.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================= -->
+    <!-- SECTION 2: ABOUT GREENLAND (영화 분석) -->
+    <!-- ============================================= -->
+    <section id="sec-about" class="hidden space-y-16">
+      
+      <!-- Section Title -->
+      <div class="border-l-4 border-[#FF3333] pl-4 space-y-2">
+        <span class="text-xs font-bold text-[#FF3333] tracking-widest uppercase">FILM ANALYSIS & ARCHIVE</span>
+        <h2 class="text-3xl font-title font-black tracking-tight text-white">ABOUT <span class="text-hazard">GREENLAND</span> (2020)</h2>
+      </div>
+
+      <!-- Movie Intro Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Text Column -->
+        <div class="lg:col-span-7 space-y-6">
+          <p class="text-lg text-gray-300 font-semibold leading-relaxed">
+            "재난 영화의 새로운 패러다임을 열었다" — 왜 우리는 화려한 수억 달러짜리 SF 액션보다 이 영화에 몸서리쳤을까요?
+          </p>
+          <p class="text-gray-400 leading-relaxed text-sm md:text-base">
+            영화 &lt;그린랜드&gt;(2020)는 기존 재난 영화들의 전형적인 클리셰를 완전히 뒤집습니다. 
+            주인공은 우주 비행사나 백만장자, 혹은 미스터리한 능력자가 아닙니다. 
+            외도를 후회하고 가정의 화합을 꿈꾸는 평범한 건축 엔지니어 '존 개리티'와 그의 가족이 주인공입니다. 
+            비상 정부로부터 선별된 극소수에게만 전송된 'QR 대피 티켓'이 그들의 휴대폰을 울리는 순간, 
+            가장 현실적인 지옥문이 개방됩니다.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 border-t border-b border-[#222] py-6">
+            <div>
+              <span class="text-xs text-gray-500 block">감독</span>
+              <span class="text-sm font-bold text-white">릭 로만 워 (Ric Roman Waugh)</span>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500 block">주연</span>
+              <span class="text-sm font-bold text-white">제라드 바틀러, 모레나 바카린</span>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500 block">상영시간</span>
+              <span class="text-sm font-bold text-white">119분</span>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500 block">개봉년도</span>
+              <span class="text-sm font-bold text-[#FF3333]">2020년 (그린랜드 1)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cinema Poster Style Graphic -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-[#1E0909] to-[#0B0B0B] border border-[#333] p-6 rounded-2xl flex flex-col justify-between h-[450px] relative">
+          <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800');"></div>
+          <div class="relative z-10 space-y-4">
+            <span class="text-xs font-bold text-[#FF3333] tracking-widest uppercase border-b border-[#FF3333] pb-1 inline-block">CLASSIFIED MEMO</span>
+            <h3 class="text-2xl font-title font-black tracking-wider text-white">지정 대피소: GREENLAND</h3>
+            <p class="text-gray-400 text-xs leading-relaxed">
+              혜성 파편 폭격 속에서 유일하게 충격을 버틸 수 있도록 설계된 지하 벙커. 
+              미국 군 당국은 사회적 재건 가치(기여 가능 직업군, 질병 부재 여부)가 높은 1%의 인재를 긴급히 선별해 수송 비행기에 탑승시키고 있습니다.
+            </p>
+          </div>
+          <div class="relative z-10 border-t border-[#FF3333]/40 pt-4 space-y-2">
+            <div class="flex justify-between items-center text-xs text-gray-400">
+              <span>수송 목표지</span>
+              <span class="font-bold text-white">그린랜드 공군 기지 쉘터</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-gray-400">
+              <span>탑승 허가증</span>
+              <span class="font-bold text-[#FF3333]">선택받은 자의 QR 코드</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Appeal Points (3 매력 포인트) -->
+      <div class="space-y-8">
+        <h3 class="text-2xl font-title font-bold text-white text-center">핵심 시네마틱 매력 포인트</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Point 1 -->
+          <div class="bg-[#121212] border border-[#222] p-8 rounded-xl relative overflow-hidden group hover:border-hazard transition-all duration-300">
+            <div class="absolute right-4 top-4 text-7xl font-title font-black text-white/5 group-hover:text-hazard/10 transition-colors">01</div>
+            <h4 class="text-lg font-bold text-[#FF3333] mb-3">01. CG 중심이 아닌 현실적 공포</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              영화는 엄청난 폭발씬을 클로즈업하기보다는 먼 산 너머로 거대한 충격파가 다가오고, 대기를 뒤덮는 붉은 우주 먼지와 화염 등 관객이 "진짜 그 자리에 서 있다면 느낄 법한" 일상의 파괴적인 정지 상태에 집중합니다.
+            </p>
+          </div>
+
+          <!-- Point 2 -->
+          <div class="bg-[#121212] border border-[#222] p-8 rounded-xl relative overflow-hidden group hover:border-hazard transition-all duration-300">
+            <div class="absolute right-4 top-4 text-7xl font-title font-black text-white/5 group-hover:text-hazard/10 transition-colors">02</div>
+            <h4 class="text-lg font-bold text-[#FF3333] mb-3">02. 재난 속 인간 군상의 민낯</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              국가가 가족 중 '한 사람'만 티켓에서 제외시키는 순간, 공항은 약탈과 비명으로 가득 찹니다. 위기 속에서 남의 아이를 훔쳐 대피소에 타려는 가짜 부모, 총을 겨누며 위협하는 민간인들을 아주 생생하고 차갑게 고발합니다.
+            </p>
+          </div>
+
+          <!-- Point 3 -->
+          <div class="bg-[#121212] border border-[#222] p-8 rounded-xl relative overflow-hidden group hover:border-hazard transition-all duration-300">
+            <div class="absolute right-4 top-4 text-7xl font-title font-black text-white/5 group-hover:text-hazard/10 transition-colors">03</div>
+            <h4 class="text-lg font-bold text-[#FF3333] mb-3">03. 평범한 인물의 생존 분투기</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              정의롭고 무조건적인 영웅주의는 없습니다. 아들의 당뇨약과 인슐린 앰플을 잃어버릴까 노심초사하며, 아들과 아내의 잃어버린 생사를 쫓아 흙먼지가 날리는 절박한 도로를 뛰고 또 뛸 뿐입니다. 그래서 관객은 그 고통에 더 공감하게 됩니다.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================= -->
+    <!-- SECTION 3: SURVIVAL TEST (생존 시뮬레이터) -->
+    <!-- ============================================= -->
+    <section id="sec-simulation" class="hidden space-y-12">
+      
+      <!-- Section Title -->
+      <div class="border-l-4 border-[#FF3333] pl-4 space-y-2">
+        <span class="text-xs font-bold text-[#FF3333] tracking-widest uppercase">IMMERSIVE MORAL DILEMMA TEST</span>
+        <h2 class="text-3xl font-title font-black tracking-tight text-white">지구 종말 D-48: <span class="text-hazard">나의 생존 본능 측정</span></h2>
+        <p class="text-gray-400 text-sm">영화 &lt;그린랜드&gt; 속에 내던져진 실제 딜레마를 마주했을 때, 과연 당신은 쉘터에 도달해 살아남을 수 있을지 측정합니다.</p>
+      </div>
+
+      <!-- Simulation Layout Container -->
+      <div class="bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-12 max-w-4xl mx-auto" id="quiz-container">
+        
+        <!-- Quiz Intro State -->
+        <div id="quiz-intro" class="text-center space-y-6">
+          <div class="inline-block p-4 rounded-full bg-[#1A0505] border border-[#FF3333]/30 text-hazard text-3xl animate-blink mb-2">
+            📡
+          </div>
+          <h3 class="text-2xl font-bold text-white">시뮬레이터 가동 준비 완료</h3>
+          <p class="text-gray-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+            총 4가지 문항으로 구성된 도덕적 생존 딜레마를 풀며 당신의 숨겨진 가치관과 도덕성, 그리고 이기심을 계량화합니다. 극도로 사실적인 상황에 몰입해서 솔직하게 답변해 주세요.
+          </p>
+          <button onclick="startQuiz()" class="btn-hazard px-8 py-3 rounded-lg text-sm tracking-widest font-black uppercase transition-all duration-300">
+            시뮬레이션 전송 수신 시작
+          </button>
+        </div>
+
+        <!-- Quiz Gameplay State (Hidden by default) -->
+        <div id="quiz-gameplay" class="hidden space-y-8">
+          <!-- Step Indicator -->
+          <div class="flex justify-between items-center border-b border-[#222] pb-4">
+            <span class="text-xs font-bold text-[#FF3333] uppercase tracking-wider font-title" id="quiz-step-text">STEP 1 / 4</span>
+            <div class="w-1/2 bg-[#222] h-1.5 rounded-full overflow
