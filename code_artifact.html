@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CINE-SHELTER : 영화 그린랜드 생존 아카이브</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Montserrat & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #070707;
+      color: #E2E8F0;
+      overflow-x: hidden;
+    }
+    .font-title {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    /* Hazard Glowing & Warning Styles */
+    .text-hazard {
+      color: #FF3333;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.6), 0 0 20px rgba(255, 51, 51, 0.4);
+    }
+    .border-hazard {
+      border-color: #FF3333;
+      box-shadow: 0 0 12px rgba(255, 51, 51, 0.3);
+    }
+    .bg-hazard-gradient {
+      background: linear-gradient(180deg, rgba(255, 51, 51, 0.08) 0%, rgba(0, 0, 0, 0.95) 100%);
+    }
+    .bg-dark-card {
+      background-color: #0D0D0D;
+      border: 1px solid #1F1F1F;
+    }
+    .btn-hazard {
+      background-color: #FF3333;
+      color: #000000;
+      font-weight: 900;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid #FF3333;
+    }
+    .btn-hazard:hover {
+      background-color: transparent;
+      color: #FF3333;
+      box-shadow: 0 0 20px rgba(255, 51, 51, 0.8);
+      transform: translateY(-2px);
+    }
+    .btn-secondary-hazard {
+      border: 1px solid #333333;
+      background-color: transparent;
+      color: #94A3B8;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary-hazard:hover {
+      border-color: #FF3333;
+      color: #FFFFFF;
+      background-color: rgba(255, 51, 51, 0.05);
+    }
+
+    /* Terminal Scanlines Overlay */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.15) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* Scrollbar Style */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070707;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222222;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF3333;
+    }
+
+    /* Keyframe Animations */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .animate-blink {
+      animation: blink 1.2s infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.5; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s infinite;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen">
+
+  <!-- Retro Scanline Overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Realtime Emergency Alert Ticker -->
+  <div class="w-full bg-[#1A0505] border-b border-[#FF3333] py-2 px-4 overflow-hidden z-50 relative select-none">
+    <div class="animate-marquee flex items-center space-x-8">
+      <!-- Double content for continuous scrolling -->
+      <span class="flex items-center text-xs text-[#FF3333] font-bold tracking-widest uppercase">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FF3333] mr-2 pulse-ring animate-blink"></span>
+        [EMERGENCY BROADCAST SYSTEM] : CLARKE COMET INTERSECTING EARTH ORBIT
+      </span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-gray-300">정부 선정 1등급 대피시설 '그린랜드 지하 벙커' 생존 티켓 가동 중</span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-[#FF3333] font-bold">WARNING: 공항 군사통제선 이탈 시 발포 가능</span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-gray-300">CINE-SHELTER 통신 제1망 안정적 활성화 완료</span>
+      
+      <!-- Duplicate content to prevent gaps -->
+      <span class="flex items-center text-xs text-[#FF3333] font-bold tracking-widest uppercase">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FF3333] mr-2 pulse-ring animate-blink"></span>
+        [EMERGENCY BROADCAST SYSTEM] : CLARKE COMET INTERSECTING EARTH ORBIT
+      </span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-gray-300">정부 선정 1등급 대피시설 '그린랜드 지하 벙커' 생존 티켓 가동 중</span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-[#FF3333] font-bold">WARNING: 공항 군사통제선 이탈 시 발포 가능</span>
+      <span class="text-xs text-gray-500">/</span>
+      <span class="text-xs text-gray-300">CINE-SHELTER 통신 제1망 안정적 활성화 완료</span>
+    </div>
+  </div>
+
+  <!-- Navigation Header -->
+  <header class="border-b border-[#1A1A1A] bg-[#0A0A0A]/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center space-x-3 group">
+        <div class="p-2 border border-[#FF3333] bg-[#2A0505] text-hazard font-title font-black tracking-wider text-sm rounded">
+          SHELTER
+        </div>
+        <div>
+          <span class="font-title font-black text-xl tracking-wider text-white block group-hover:text-hazard transition-colors">CINE-SHELTER</span>
+          <span class="text-[9px] font-bold tracking-widest text-gray-500 block">GREENLAND SURVIVAL INITIATIVE</span>
+        </div>
+      </a>
+      
+      <div class="flex items-center space-x-4">
+        <!-- Audio Warning Beacon Toggle -->
+        <button onclick="toggleEmergencySiren()" id="sirenBtn" class="p-2.5 rounded-lg border border-[#333] hover:border-[#FF3333] hover:text-[#FF3333] transition-colors text-gray-400 text-xs flex items-center space-x-1.5" title="비상 경보음 재생/정지">
+          <span class="inline-block w-2 h-2 rounded-full bg-gray-500" id="sirenIndicator"></span>
+          <span class="font-bold font-title text-[10px] tracking-wider uppercase">SIREN OFF</span>
+        </button>
+        <span class="text-gray-800">|</span>
+        <span class="text-xs text-gray-400 font-mono tracking-widest hidden sm:inline">SAT-LINK: ACTIVE [100%]</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div class="relative bg-hazard-gradient border border-[#222] rounded-2xl p-8 md:p-16 overflow-hidden flex flex-col items-center text-center space-y-8">
+      <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#ff3333_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+      
+      <!-- Blinking Warning Badge -->
+      <span class="px-4 py-1.5 rounded border border-[#FF3333] text-[#FF3333] text-xs font-black tracking-widest bg-[#1A0505] uppercase animate-blink">
+        혜성 '클라크' 충돌 임박
+      </span>
+
+      <!-- Urgent Headline -->
+      <h1 class="text-3xl md:text-6xl font-title font-black tracking-tight text-white max-w-4xl leading-tight">
+        단 1%의 생존 티켓,<br>
+        <span class="text-hazard">당신이라면 어떤 선택을 하시겠습니까?</span>
+      </h1>
+
+      <p class="text-gray-400 max-w-2xl text-sm md:text-base leading-relaxed">
+        화려한 히어로의 가짜 종말론이 아닙니다. 영화 &lt;그린랜드&gt;(2020)가 생생하게 고발하는 
+        가장 현실적이고 잔인한 재난의 한복판. 남은 시간은 단 48시간, 쉘터로 통하는 문이 곧 닫힙니다.
+      </p>
+
+      <!-- Terminal Countdown Console -->
+      <div class="bg-black/80 border border-[#222] rounded-xl px-8 py-5 md:px-14 md:py-7 flex flex-col items-center space-y-3 shadow-2xl relative">
+        <div class="absolute top-2 left-4 text-[9px] font-mono tracking-wider text-gray-500 uppercase">IMPACT_EST_TIMER</div>
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">지구 충돌(D-48)까지 생존 잔여시간</span>
+        <div id="countdown" class="font-title text-4xl md:text-6xl font-black text-[#FF3333] tracking-widest font-mono">
+          47:59:59:99
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center">
+        <a href="#simulator" class="btn-hazard px-8 py-4 rounded text-sm tracking-widest uppercase transition-all flex items-center justify-center space-x-2">
+          <span>즉시 생존 가능성 테스트</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="#about" class="btn-secondary-hazard px-8 py-4 rounded text-sm tracking-widest uppercase transition-all flex items-center justify-center">
+          그린랜드 기록관 분석
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-[#1F1F1F] scroll-mt-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <!-- Film Story details -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="border-l-4 border-[#FF3333] pl-4 space-y-2">
+          <span class="text-xs font-bold text-[#FF3333] tracking-widest uppercase font-title">CASE FILE #2020-08</span>
+          <h2 class="text-2xl md:text-4xl font-title font-black tracking-tight text-white uppercase">WHY GREENLAND (2020)?</h2>
+        </div>
+        
+        <p class="text-lg text-gray-300 font-semibold leading-relaxed">
+          수억 달러의 SF 폭발물보다 우리의 심장을 얼어붙게 만든 영화.
+        </p>
+        
+        <p class="text-gray-400 leading-relaxed text-sm md:text-base space-y-4">
+          영화 &lt;그린랜드&gt;(2020)는 기존 재난 영화의 정형화된 영웅 클리셰를 정면으로 거부합니다. 
+          우주 행성을 격파하는 천재 과학자나 무적의 특수부대원은 없습니다. 오로지 외도를 후회하고 가정의 결속을 지켜내고자 하는 평범한 가장 '존 개리티'와 그의 아내, 아들이 극을 이끌어 갈 뿐입니다.<br><br>
+          비상 대피 승인 수신 문자가 울리는 기쁨도 잠시, 1%의 선별 인원에게만 허용된 쉘터 출입 권한은 
+          순식간에 가족을 갈라놓고 이웃 간에 총부리를 겨누게 만듭니다. 우리는 이 사실적 전율에 포커스를 맞춥니다.
+        </p>
+
+        <!-- Movie Metadata Specs -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-b border-[#222] py-6 font-mono text-xs">
+          <div>
+            <span class="text-gray-500 block mb-1">DIRECTOR</span>
+            <span class="font-bold text-white uppercase">RIC ROMAN WAUGH</span>
+          </div>
+          <div>
+            <span class="text-gray-500 block mb-1">CAST</span>
+            <span class="font-bold text-white uppercase">GERARD BUTLER</span>
+          </div>
+          <div>
+            <span class="text-gray-500 block mb-1">RUNTIME</span>
+            <span class="font-bold text-white uppercase">119 MINUTES</span>
+          </div>
+          <div>
+            <span class="text-gray-500 block mb-1">RELEASED</span>
+            <span class="font-bold text-[#FF3333] uppercase">YEAR 2020</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Immersive Graphic Card -->
+      <div class="lg:col-span-5 bg-dark-card p-8 rounded-xl border-l-4 border-l-[#FF3333] flex flex-col justify-between min-h-[380px] shadow-xl relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#1A0505] to-[#0D0D0D] opacity-40 z-0"></div>
+        <div class="relative z-10 space-y-4">
+          <span class="text-xs font-mono font-bold text-[#FF3333] tracking-widest uppercase border-b border-[#FF3333] pb-1 inline-block">SHELTER_DOSSIER</span>
+          <h3 class="text-xl font-title font-black tracking-wide text-white">최종 도피처: GREENLAND 벙커</h3>
+          <p class="text-gray-400 text-xs leading-relaxed font-light">
+            미 공군 기지 통제하에 운영되는 지하 벙커 네트워크. 거대 우주 물체의 극점 충격을 무력화하기 위한 유일한 생존 보루. 사회 기여 가치, 기저질환 유무 등 철저히 검증된 생존 인원만 입장이 허용됩니다.
+          </p>
+        </div>
+        <div class="relative z-10 border-t border-[#222] pt-4 space-y-2 text-xs">
+          <div class="flex justify-between items-center text-gray-400">
+            <span>목표 좌표</span>
+            <span class="font-mono text-white">72.5796° N, 38.4592° W</span>
+          </div>
+          <div class="flex justify-between items-center text-gray-400">
+            <span>허가 프로토콜</span>
+            <span class="font-bold text-[#FF3333] uppercase font-mono">ENCRYPTED QR TICKET</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Strength Cards Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-[#1F1F1F]">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="text-2xl md:text-4xl font-title font-black text-white">극사실주의 재난이 주는 <span class="text-hazard">3가지 본질</span></h2>
+      <p class="text-gray-400 text-sm md:text-base">일반 오락 영화가 미화하는 종말을 뒤엎는, 실전과 같은 시각적 깊이.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Card 1 -->
+      <div class="bg-dark-card p-8 rounded-xl relative overflow-hidden group hover:border-[#FF3333] transition-all duration-300">
+        <div class="absolute top-4 right-4 text-6xl font-title font-black text-white/5 group-hover:text-[#FF3333]/15 transition-colors">01</div>
+        <div class="space-y-4">
+          <div class="inline-block p-3 bg-[#1A0505] rounded border border-[#FF3333]/30">
+            <svg class="w-6 h-6 text-[#FF3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white">CG의 미화 없는 사실적 정지</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            비현실적으로 부서지는 고층 건물보다, 하늘 전체가 붉게 물들고 먼 대기로부터 전해지는 충격 화염풍 등 관객이 현장에 버려졌을 때 느낄 즉각적 폐쇄감과 절박함에 집중합니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-dark-card p-8 rounded-xl relative overflow-hidden group hover:border-[#FF3333] transition-all duration-300">
+        <div class="absolute top-4 right-4 text-6xl font-title font-black text-white/5 group-hover:text-[#FF3333]/15 transition-colors">02</div>
+        <div class="space-y-4">
+          <div class="inline-block p-3 bg-[#1A0505] rounded border border-[#FF3333]/30">
+            <svg class="w-6 h-6 text-[#FF3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white">인간성의 처참한 붕괴와 민낯</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            나의 자식을 쉘터 비행기에 실어 보내기 위해 타인의 자식을 가로채려 시도하는 이웃, 총격과 약탈이 정당화되는 무법지대를 다큐멘터리 수준의 싸늘한 작법으로 전개합니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-dark-card p-8 rounded-xl relative overflow-hidden group hover:border-[#FF3333] transition-all duration-300">
+        <div class="absolute top-4 right-4 text-6xl font-title font-black text-white/5 group-hover:text-[#FF3333]/15 transition-colors">03</div>
+        <div class="space-y-4">
+          <div class="inline-block p-3 bg-[#1A0505] rounded border border-[#FF3333]/30">
+            <svg class="w-6 h-6 text-[#FF3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white">보통 사람들의 극단적 딜레마</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            아들의 일일 당뇨 소모품인 인슐린 앰플 한 갑을 놓쳤을 때 발생하는 가족 전체의 전멸 공포 등 일상의 도구와 소모품들이 생사의 열쇠로 변해버리는 묵직한 서사 전개.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Survival Simulator Section (Interactive Dilemma Game) -->
+  <section id="simulator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-[#1F1F1F] scroll-mt-24">
+    <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+      <span class="text-[#FF3333] font-mono text-xs font-bold tracking-widest uppercase">SAT-LINK SIMULATOR ENGINES ACTIVE</span>
+      <h2 class="text-2xl md:text-4xl font-title font-black text-white">지구 종말 D-48: <span class="text-hazard">도덕적 생존 시뮬레이션</span></h2>
+      <p class="text-gray-400 text-sm">만약 당신이 영화 속 절박한 재난 딜레마를 고스란히 맞닥뜨린다면, 살아서 벙커에 들어갈 수 있을까요?</p>
+    </div>
+
+    <!-- Simulator Terminal Console -->
+    <div class="max-w-3xl mx-auto bg-dark-card border border-[#222] rounded-xl overflow-hidden shadow-2xl" id="simContainer">
+      <!-- Top header line of emulator -->
+      <div class="bg-[#121212] border-b border-[#222] px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="w-3 h-3 rounded-full bg-[#FF3333]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#333]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#333]"></span>
+        </div>
+        <span class="font-mono text-[10px] tracking-widest text-[#FF3333]">SYSTEM_DIL_PROT_V1.9</span>
+      </div>
+
+      <!-- Start View -->
+      <div class="p-8 md:p-12 text-center space-y-6" id="simIntro">
+        <div class="w-16 h-16 bg-[#1A0505] border border-[#FF3333]/30 rounded-full flex items-center justify-center mx-auto animate-pulse">
+          <span class="text-[#FF3333] text-2xl font-mono">📡</span>
+        </div>
+        <div class="space-y-2">
+          <h3 class="text-xl font-bold text-white">생존 가치 판단 절차 개시</h3>
+          <p class="text-gray-400 text-xs md:text-sm leading-relaxed max-w-md mx-auto">
+            본 테스트는 영화 속 긴박한 네 가지 상황을 토대로 설계되었습니다. 선택의 도덕성과 이기성의 가치를 평가해 예상 보루 도달 확률 및 당신의 본능 타입을 계산합니다.
+          </p>
+        </div>
+        <button onclick="playEngineTone(); startSimulation()" class="btn-hazard px-8 py-3.5 rounded text-xs tracking-widest uppercase font-black">
+          시뮬레이터 활성화 수신
+        </button>
+      </div>
+
+      <!-- Playing View (Initially Hidden) -->
+      <div class="p-8 md:p-12 space-y-8 hidden" id="simPlay">
+        <!-- Progress Bar Indicator -->
+        <div class="flex items-center justify-between border-b border-[#1A1A1A] pb-4">
+          <span class="text-xs font-mono font-bold text-gray-500 uppercase" id="simStepIndicator">STEP 1 / 4</span>
+          <div class="w-2/3 bg-[#1a1a1a] h-1.5 rounded-full overflow-hidden">
+            <div id="simProgressBar" class="bg-[#FF3333] h-full transition-all duration-300" style="width: 25%;"></div>
+          </div>
+        </div>
+
+        <!-- Scenario Text Block -->
+        <div class="space-y-3">
+          <span class="text-[10px] font-mono tracking-widest text-[#FF3333] uppercase" id="simTag">SCENARIO #01: 인슐린 딜레마</span>
+          <h4 class="text-lg md:text-xl font-bold text-white leading-snug" id="simTitle">
+            아들의 필수 생명 약품(인슐린)이 든 배낭이 사라졌음을 수송기 탑승 직전 알게 되었습니다. 수송 지휘관은 기저질환을 지닌 승객의 보루 탑승을 단호히 거절하려 합니다. 당신은 어떻게 하겠습니까?
+          </h4>
+        </div>
+
+        <!-- Multi choice options list -->
+        <div class="space-y-3" id="simOptions">
+          <!-- Dynamically populated in JavaScript -->
+        </div>
+      </div>
+
+      <!-- Result View (Initially Hidden) -->
+      <div class="p-8 md:p-12 text-center space-y-8 hidden" id="simResult">
+        <div class="space-y-2">
+          <span class="text-xs font-mono font-bold text-[#FF3333] uppercase tracking-widest animate-blink">ANALYSIS COMPLETE</span>
+          <h3 class="text-2xl font-bold text-white">수신된 최종 분석 보고서</h3>
+        </div>
+
+        <!-- Result Score Ring visualizer -->
+        <div class="inline-flex flex-col items-center justify-center p-6 bg-[#1A0505] border border-[#FF3333]/30 rounded-xl relative">
+          <span class="text-gray-500 font-mono text-[10px] uppercase mb-1">그린랜드 벙커 도달 생존확률</span>
+          <span class="text-5xl font-title font-black text-[#FF3333]" id="resPercentage">85%</span>
+        </div>
+
+        <div class="space-y-3 max-w-md mx-auto">
+          <div class="text-sm font-mono tracking-wider text-gray-400">당신의 생존 본능 페르소나:</div>
+          <div class="text-xl font-black text-white uppercase border border-[#333] py-2 px-4 rounded bg-black/40 inline-block" id="resPersona">
+            냉철한 생존주의 리더
+          </div>
+          <p class="text-xs text-gray-400 leading-relaxed pt-2" id="resDesc">
+            인간의 원초적인 이타성보다, 내 울타리와 가족 중심의 빠른 결단을 이끌어 낼 스타일입니다. 극단적 붕괴가 진행될 때 가장 생존율이 높지만 감내할 도덕적 상흔도 깊을 수 있습니다.
+          </p>
+        </div>
+
+        <div class="flex gap-4 justify-center pt-4">
+          <button onclick="playEngineTone(); startSimulation()" class="btn-secondary-hazard px-6 py-3 rounded text-xs tracking-widest uppercase">
+            재시험 진행
+          </button>
+          <a href="#board" class="btn-hazard px-6 py-3 rounded text-xs tracking-widest uppercase flex items-center justify-center">
+            동료 생존자와 결과 공유
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Survival Guide Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-[#1F1F1F]">
+    <div class="border-l-4 border-[#FF3333] pl-4 space-y-2 mb-12">
+      <span class="text-xs font-bold text-[#FF3333] tracking-widest uppercase font-title">CASE RECOVERY ARCHIVES</span>
+      <h2 class="text-2xl md:text-4xl font-title font-black text-white">현실 재난 발생 시 <span class="text-hazard">즉각 생존 수칙</span></h2>
+      <p class="text-gray-400 text-sm">영화 &lt;그린랜드&gt; 딜레마 사례를 기반으로 복원한 실전 생존 행동 강령.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Guide 1 -->
+      <div class="bg-dark-card rounded-xl p-6 md:p-8 flex items-start space-x-6 border-b-2 border-b-[#FF3333]">
+        <div class="bg-[#1A0505] p-3 border border-[#FF3333]/30 rounded-lg text-2xl">🚨</div>
+        <div class="space-y-2">
+          <h3 class="text-lg font-bold text-white">제1조: 정부 공식 통보 문자 우선 식별</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            SNS와 사설 메신저를 통해 전파되는 대피 정보는 위기 시 군중 무질서 심리를 유발해 기동 속도를 급격히 낮춥니다. 오로지 주정부 및 긴급 방송 센터의 승인 식별 QR 및 번호 코드 소유 여부만을 신뢰해 경로를 한정해야 합니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- Guide 2 -->
+      <div class="bg-dark-card rounded-xl p-6 md:p-8 flex items-start space-x-6 border-b-2 border-b-[#FF3333]">
+        <div class="bg-[#1A0505] p-3 border border-[#FF3333]/30 rounded-lg text-2xl">💊</div>
+        <div class="space-y-2">
+          <h3 class="text-lg font-bold text-white">제2조: 생존 배낭의 콤팩트 이중화</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            식수, 의약품, 신원보증 카드 등 핵심 물품은 무거운 캐리어 형태가 아닌 즉시 착용 및 분리가 가능한 모듈식 배낭에 보관해야 합니다. 인파의 습격을 당하거나 차량을 버리고 도보 탈출해야 할 때 이탈 및 분실 리스크를 줄입니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Shelter Board Section -->
+  <section id="board" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-[#1F1F1F] scroll-mt-24">
+    <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+      <span class="text-[#FF3333] font-mono text-xs font-bold tracking-widest uppercase animate-blink">ENCRYPTED SAT-LINK COMMUNICATIONS SYSTEM</span>
+      <h2 class="text-2xl md:text-4xl font-title font-black text-white">쉘터 <span class="text-hazard">합동 수신 통신망</span></h2>
+      <p class="text-gray-400 text-sm">지구 마지막 날을 마주하며 동료 생존자들과 긴급 주파수 메시지를 동기화하십시오.</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-dark-card border border-[#222] rounded-xl overflow-hidden p-6 md:p-8 space-y-6 shadow-2xl relative">
+      <div class="absolute top-2 right-4 text-[8px] font-mono tracking-widest text-gray-600">IP-ENCRYPTED FEED</div>
+      
+      <!-- Input Message Terminal Form -->
+      <form id="boardForm" onsubmit="handlePostMessage(event)" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="text" id="boardUser" placeholder="식별 코드 입력 (이름/닉네임)" required
+            class="bg-black/60 border border-[#222] focus:border-[#FF3333] rounded px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+          <input type="text" id="boardPersona" placeholder="생존 시뮬레이션 판정결과 (선택)" 
+            class="bg-black/60 border border-[#222] focus:border-[#FF3333] rounded px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+        </div>
+        <div class="relative">
+          <textarea id="boardText" rows="3" placeholder="충돌 전 지구상의 마지막 메시지를 타전하십시오..." required
+            class="w-full bg-black/60 border border-[#222] focus:border-[#FF3333] rounded p-4 text-sm text-white placeholder-gray-600 outline-none transition-colors resize-none"></textarea>
+          <button type="submit" onclick="playClickTone()" class="absolute bottom-4 right-4 bg-[#FF3333] text-black font-black text-xs uppercase px-5 py-2.5 rounded hover:bg-[#CC0000] transition-colors tracking-widest">
+            타전 (SEND)
+          </button>
+        </div>
+      </form>
+
+      <!-- Simulated Dynamic Broadcast Log -->
+      <div class="space-y-3" id="messageLog">
+        <div class="text-center py-6 text-gray-500 font-mono text-xs">수신 채널 초기화 완료 - 터미널 대기 중...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-[#1F1F1F] py-12 text-center text-xs text-gray-600 font-mono space-y-4">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+      <div>
+        <span class="text-white font-title font-bold tracking-wider">CINE-SHELTER</span> © 2026 GREENLAND S1 INITIATIVE. ALL SECURE PROTOCOLS APPLIED.
+      </div>
+      <div class="flex space-x-6 text-[10px] tracking-wider">
+        <a href="#about" class="hover:text-white transition-colors">ABOUT RECORD</a>
+        <a href="#simulator" class="hover:text-white transition-colors">TEST PROTOCOL</a>
+        <span class="text-gray-800">|</span>
+        <span class="text-hazard animate-blink">SECURE LINE OVERRIDE</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Global State and Variables */
+    let countdownInterval;
+    let audioCtx = null;
+    let sirenOsc = null;
+    let sirenInterval = null;
+    let isSirenPlaying = false;
+
+    // Simulation Quiz Questions database
+    const questions = [
+      {
+        tag: "SCENARIO #01: 인슐린 딜레마",
+        title: "아들의 필수 생명 약품(인슐린)이 든 배낭이 사라졌음을 수송기 탑승 직전 알게 되었습니다. 수송 지휘관은 기저질환을 지닌 승객의 보루 탑승을 거절하려 합니다. 당신은 어떻게 하겠습니까?",
+        options: [
+          { text: "위반 사실을 철저히 속이고 인슐린 배낭이 수송 화물 안에 있다고 거짓말한 채 탑승 기회부터 획득한다.", score: 85, penalty: 20 },
+          { text: "즉시 남편에게 연락하여 인슐린 약품을 찾아오도록 지시한 후, 수송기 이륙이 취소될 리스크를 안은 채 게이트 밖에서 남편을 기다린다.", score: 50, penalty: 50 },
+          { text: "승인을 단념하고 군 당국의 약품 보급 프로토콜을 믿고 다른 인근 약국이나 물류 허브를 직접 수색하러 공항을 박차고 나간다.", score: 35, penalty: 80 }
+        ]
+      },
+      {
+        tag: "SCENARIO #02: 공항 낙오 표식 딜레마",
+        title: "인파의 군사 폭격 습격으로 아내와 아이를 공항에서 잃어버렸습니다. 혼돈 속에 바닥을 뒹굴던 군대 수송 특별 탑승 손목 밴드가 발밑에 있는 것을 발견했습니다. 경비는 삼엄한 상황입니다. 당신의 결단은?",
+        options: [
+          { text: "아무 말 없이 주워 내 손목에 찬 뒤 가족을 수색하기 위해 권한자 자격으로 통제 구역 장벽 내부로 조용히 침입한다.", score: 90, penalty: 30 },
+          { text: "내 손목에 차는 것 대신 주변에 밴드를 절박하게 찾는 낙오된 임산부나 아동의 손을 잡아 밴드를 쥐여주고 나만의 수색을 도모한다.", score: 40, penalty: 60 },
+          { text: "위조나 부정탑승 혐의가 적용되어 사살당할 리스크를 회피하고 주운 장비를 버려둔 채 공항 밖 차량 통행선으로 직행한다.", score: 60, penalty: 40 }
+        ]
+      },
+      {
+        tag: "SCENARIO #03: 이웃의 구조 요청 딜레마",
+        title: "차량 진입이 통제된 임시 교각에서 총을 든 폭도들의 시위대가 차량을 정지시켰습니다. 이때 이웃집 여성이 아이만이라도 차량 뒷좌석에 함께 태워 대피해 달라며 창문을 거세게 두드리며 울부짖습니다. 어떻게 하겠습니까?",
+        options: [
+          { text: "냉정하게 창문을 열지 않은 채 내 가족이 앉은 차량의 가속 페달을 그대로 밟아 현장을 빠르게 쇠락해 탈출한다.", score: 95, penalty: 10 },
+          { text: "아이가 타고 남을 만큼의 아주 협소한 틈을 주어 아이만 일단 받아 태운 후 내 가족과 함께 생사의 여정을 감수한다.", score: 65, penalty: 45 },
+          { text: "차의 브레이크를 밟고 하차해 이웃들을 중재하고 그들의 피난 루트를 설계하며 모두 함께 이동할 수 있는 가이드를 찾아본다.", score: 25, penalty: 90 }
+        ]
+      },
+      {
+        tag: "SCENARIO #04: 벙커 선별 딜레마",
+        title: "사투 끝에 그린란드 전진 기지 활주로에 불시착했습니다. 그러나 보루 쉘터 통제 지휘관은 '사회의 재구성 가치' 평가에 맞지 않아 내부 가치 기여도가 낮으므로 보루 입소 수용 한도를 통과할 수 없다고 합니다.",
+        options: [
+          { text: "나의 토목 기술 및 특수 건축 엔지니어링 능력이 지상 생태 재건을 위해 필수불가결한 재산임을 정당하고 날카롭게 역설해 관철시킨다.", score: 90, penalty: 20 },
+          { text: "보루 선별 위반 사태가 주는 부조리함을 강력히 부르짖으며 주변 다른 입소 불허 판정을 받은 시민들과 함께 기동 집단 항의를 주도한다.", score: 40, penalty: 70 },
+          { text: "판정을 깨끗이 받아들이고 아내와 아이만이라도 입소시켜 줄 것을 간곡히 빌며 무릎을 꿇고 애원한 채 나는 외부에 잔류한다.", score: 75, penalty: 30 }
+        ]
+      }
+    ];
+
+    let currentStep = 0;
+    let accumScore = 0;
+    let accumPenalty = 0;
+
+    // Simulation Database Mocking
+    let liveMessages = [
+      { user: "존 개리티", type: "현실주의 패밀리 리더", text: "공항 외곽 국도 도로 전체가 정지되었습니다. 다들 통신망 끊기기 전에 대피소 경로 확보하십시오.", date: "방금 전" },
+      { user: "생존자_K", type: "희생적인 인도주의자", text: "내 아이를 두고 나만 타는 게 과연 인간으로서 합당한 것인지 끝없는 자괴감이 몰려옵니다.", date: "3분 전" },
+      { user: "알파수용망", type: "냉철한 생존주의자", text: "무자비한 폭격풍이 다가옵니다. 하늘이 완연히 붉게 타오르기 시작했습니다. 다들 행운을 빕니다.", date: "10분 전" }
+    ];
+
+    // Initialize Page
+    window.onload = function() {
+      startCountdown();
+      renderMessages();
+    };
+
+    // Realtime Countdown Engine (48 Hours countdown simulating Comet Clark collision)
+    function startCountdown() {
+      // Set absolute end target for real-time tension (47h 59m 59s ticking down)
+      let totalSeconds = (47 * 3600) + (59 * 60) + 59;
+      let startTick = Date.now();
+
+      countdownInterval = setInterval(() => {
+        let diffMs = Date.now() - startTick;
+        let elapsedSeconds = Math.floor(diffMs / 1000);
+        let remSeconds = totalSeconds - elapsedSeconds;
+
+        if (remSeconds <= 0) {
+          document.getElementById('countdown').innerHTML = "00:00:00:00";
+          clearInterval(countdownInterval);
+          return;
+        }
+
+        let hours = Math.floor(remSeconds / 3600);
+        let mins = Math.floor((remSeconds % 3600) / 60);
+        let secs = remSeconds % 60;
+        let ms = Math.floor((diffMs % 1000) / 10); // Simulated milliseconds
+
+        // Formatting double digits
+        let hStr = String(hours).padStart(2, '0');
+        let mStr = String(mins).padStart(2, '0');
+        let sStr = String(secs).padStart(2, '0');
+        let msStr = String(ms).padStart(2, '0');
+
+        document.getElementById('countdown').innerHTML = `${hStr}:${mStr}:${sStr}:${msStr}`;
+      }, 33);
+    }
+
+    // Synth Audio trigger logic for retro micro-interactions
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playClickTone() {
+      try {
+        initAudio();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.15);
+
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch (e) {
+        // Safe failover for browser audio restrictions
+      }
+    }
+
+    function playEngineTone() {
+      try {
+        initAudio();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(320, audioCtx.currentTime + 0.4);
+
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } catch (e) {}
+    }
+
+    // Toggle Emergency broadcast audio loop
+    function toggleEmergencySiren() {
+      try {
+        initAudio();
+        const sirenBtn = document.getElementById('sirenBtn');
+        const sirenIndicator = document.getElementById('sirenIndicator');
+
+        if (isSirenPlaying) {
+          // Stop siren
+          if (sirenOsc) {
+            try { sirenOsc.stop(); } catch (e) {}
+            sirenOsc = null;
+          }
+          if (sirenInterval) {
+            clearInterval(sirenInterval);
+            sirenInterval = null;
+          }
+          sirenIndicator.classList.remove('bg-[#FF3333]');
+          sirenIndicator.classList.add('bg-gray-500');
+          sirenBtn.querySelector('span:nth-child(2)').innerText = "SIREN OFF";
+          isSirenPlaying = false;
+        } else {
+          // Play siren (low sweeping pitch)
+          isSirenPlaying = true;
+          sirenIndicator.classList.remove('bg-gray-500');
+          sirenIndicator.classList.add('bg-[#FF3333]');
+          sirenBtn.querySelector('span:nth-child(2)').innerText = "SIREN ON";
+
+          let step = 0;
+          sirenInterval = setInterval(() => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'sine';
+            let baseFreq = (step % 2 === 0) ? 440 : 554;
+            osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq - 100, audioCtx.currentTime + 0.8);
+
+            gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.85);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+            step++;
+          }, 1000);
+        }
+      } catch (e) {}
+    }
+
+    // Start Simulation Process
+    function startSimulation() {
+      currentStep = 0;
+      accumScore = 0;
+      accumPenalty = 0;
+      
+      document.getElementById('simIntro').classList.add('hidden');
+      document.getElementById('simResult').classList.add('hidden');
+      document.getElementById('simPlay').classList.remove('hidden');
+
+      loadQuestion(0);
+    }
+
+    // Load indexed Question step
+    function loadQuestion(index) {
+      const q = questions[index];
+      document.getElementById('simStepIndicator').innerText = `STEP ${index + 1} / 4`;
+      document.getElementById('simProgressBar').style.width = `${((index + 1) / 4) * 100}%`;
+      document.getElementById('simTag').innerText = q.tag;
+      document.getElementById('simTitle').innerText = q.title;
+
+      const optionsDiv = document.getElementById('simOptions');
+      optionsDiv.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left bg-black/40 hover:bg-[#1A0505] border border-[#222] hover:border-[#FF3333] p-4 rounded text-xs md:text-sm text-gray-300 hover:text-white transition-all duration-200 flex justify-between items-center";
+        btn.onclick = () => {
+          playClickTone();
+          selectOption(opt.score, opt.penalty);
+        };
+        btn.innerHTML = `
+          <span class="pr-4 leading-relaxed">${opt.text}</span>
+          <span class="text-[10px] font-mono text-[#FF3333] font-bold">SELECT ▶</span>
+        `;
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    // Process select and advance steps
+    function selectOption(score, penalty) {
+      accumScore += score;
+      accumPenalty += penalty;
+      currentStep++;
+
+      if (currentStep < questions.length) {
+        loadQuestion(currentStep);
+      } else {
+        showResults();
+      }
+    }
+
+    // Calculate final parameters and show Result Card
+    function showResults() {
+      document.getElementById('simPlay').classList.add('hidden');
+      document.getElementById('simResult').classList.remove('hidden');
+
+      // Calc Final Probability out of 100
+      let finalProb = Math.round((accumScore / (questions.length * 100)) * 100);
+      let penaltyFactor = Math.round((accumPenalty / (questions.length * 100)) * 100);
+      
+      // Dynamic adjust to feel authentic
+      let survivalRating = Math.max(12, Math.min(99, finalProb - Math.floor(penaltyFactor / 4)));
+
+      document.getElementById('resPercentage').innerText = `${survivalRating}%`;
+
+      // Determine Character Persona based on score profiles
+      let personaTitle = "";
+      let personaDesc = "";
+
+      if (survivalRating >= 80) {
+        personaTitle = "냉철한 실리주의 생존 전략가";
+        personaDesc = "이타심과 감상주의보다 철저히 가족 우선주의적 기동전략을 발휘합니다. 영화 속 '존 개리티'가 절정에서 발휘한 기만전술과 유사하게 도덕적 오점과 타협할지언정 절대 쉘터 탑승 자격을 상실하지 않는 생존 최상위 포식자입니다.";
+      } else if (survivalRating >= 55) {
+        personaTitle = "현실 타협형 조력적 패밀리 리더";
+        personaDesc = "나와 내 아이의 안정망이 충돌하지 않는 선에서 다른 낙오자를 구제하기 위해 가급적 인도적인 협조를 취하려 합니다. 상황 예측에 능해 공항 분실 사건 같은 대재앙에서도 유연하게 피해를 복구할 균형감각 소유자입니다.";
+      } else {
+        personaTitle = "희생적 인도주의적 공감자";
+        personaDesc = "대비 인원 판정의 모순에 대해 저항하고 불합리하게 낙오된 타인의 자식을 구하기 위해 자신을 희생하려 합니다. 영화의 도덕적 양심을 지탱해 주는 등불과 같은 군상이지만, 혼돈 그 자체인 현실적 종말의 날에는 대단히 큰 고통을 겪을 리스크가 높습니다.";
+      }
+
+      document.getElementById('resPersona').innerText = personaTitle;
+      document.getElementById('resDesc').innerText = personaDesc;
+    }
+
+    // Post new Live Log dynamic method
+    function handlePostMessage(e) {
+      e.preventDefault();
+      const userVal = document.getElementById('boardUser').value.trim();
+      const personaVal = document.getElementById('boardPersona').value.trim() || "일반 수색자";
+      const textVal = document.getElementById('boardText').value.trim();
+
+      if (!userVal || !textVal) return;
+
+      const newMsg = {
+        user: userVal,
+        type: personaVal,
+        text: textVal,
+        date: "방금 전"
+      };
+
+      liveMessages.unshift(newMsg);
+      renderMessages();
+
+      // Reset form controls
+      document.getElementById('boardUser').value = '';
+      document.getElementById('boardPersona').value = '';
+      document.getElementById('boardText').value = '';
+    }
+
+    // Redraw and render message panels
+    function renderMessages() {
+      const logDiv = document.getElementById('messageLog');
+      logDiv.innerHTML = '';
+
+      liveMessages.forEach((msg) => {
+        const item = document.createElement('div');
+        item.className = "bg-black/40 border border-[#1A1A1A] hover:border-[#FF3333]/40 p-4 rounded-lg space-y-2 transition-all";
+        item.innerHTML = `
+          <div class="flex items-center justify-between text-xs border-b border-[#1A1A1A] pb-1.5 font-mono">
+            <div class="flex items-center space-x-2">
+              <span class="text-white font-black">${msg.user}</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-[#1A0505] text-[#FF3333] border border-[#FF3333]/20">${msg.type}</span>
+            </div>
+            <span class="text-gray-600">${msg.date}</span>
+          </div>
+          <p class="text-gray-300 text-xs md:text-sm leading-relaxed">${msg.text}</p>
+        `;
+        logDiv.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
